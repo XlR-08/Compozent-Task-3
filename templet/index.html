@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/Static/style.css">
+    <title>House Price Prediction</title>
+</head>
+<body>
+    <div class="container">
+        <h1>House Price Prediction</h1>
+        <p>
+            To get a prediction, please enter the following features in the same order, separated by commas:
+        </p>
+        <ol>
+            <li><b>Median Income (MedInc)</b>: Median income in the area (e.g., 8.3252).</li>
+            <li><b>House Age (HouseAge)</b>: Median age of houses in the area (e.g., 41.0).</li>
+            <li><b>Average Rooms (AveRooms)</b>: Average number of rooms per household (e.g., 6.984127).</li>
+            <li><b>Average Bedrooms (AveBedrms)</b>: Average number of bedrooms per household (e.g., 1.023810).</li>
+            <li><b>Population (Population)</b>: Population in the area (e.g., 322.0).</li>
+            <li><b>Average Occupants (AveOccup)</b>: Average number of occupants per household (e.g., 2.555556).</li>
+            <li><b>Latitude (Latitude)</b>: Latitude of the area (e.g., 37.88).</li>
+            <li><b>Longitude (Longitude)</b>: Longitude of the area (e.g., -122.23).</li>
+        </ol>
+        <p>
+            Example input: <code>8.3252, 41.0, 6.984127, 1.023810, 322.0, 2.555556, 37.88, -122.23</code>
+        </p>
+        <form id="predictForm">
+            <label for="features"><b>Enter Features (comma-separated):</b></label><br>
+            <input type="text" id="features" placeholder="e.g., 8.3252, 41.0, 6.984127, 1.023810, 322.0, 2.555556, 37.88, -122.23"><br><br>
+            <button type="button" onclick="makePrediction()">Predict</button>
+        </form>
+        <p id="result"></p>
+    </div>
+
+    <script>
+        async function makePrediction() {
+            const features = document.getElementById("features").value.split(',').map(Number);
+            const response = await fetch("/predict", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({ features })
+            });
+            const data = await response.json();
+            if (response.ok) {
+                document.getElementById("result").textContent = `Predicted Price: ${data.prediction}`;
+            } else {
+                document.getElementById("result").textContent = `Error: ${data.error}`;
+            }
+        }
+    </script>
+</body>
+</html>
